@@ -28,6 +28,7 @@ class Main extends PluginBase implements Listener
     private $LockSession = array();
     private $handle;
     private $unlockSession = array();
+	private $Prefix = "§a[§cLock§dMy§bStuff§a]:§e";
 
 
     public function onEnable(): void
@@ -48,45 +49,47 @@ class Main extends PluginBase implements Listener
     {
         if($sender instanceof Player){
             switch ($command->getName()) {
+                case "锁":
+                case "锁定":
                 case "lock":
                     if (isset($args[0])) {
                         $this->LockSession[$sender->getName()] = $args[0];
-                        $sender->sendMessage("§cPlease touch the door you want to lock.");
+                        $sender->sendMessage($this->Prefix . "§c请点击要锁住的门.");
                     } else {
-                        $sender->sendMessage("§cMissing door-name! usage: ". $command->getUsage());
-
+                        $sender->sendMessage($this->Prefix . "§c命令使用方法: ". $command->getUsage());
                     }
-
                     return true;
-
+                case "解":
+                case "解锁":
                 case "unlock":
                     if(isset($args[0])){
                         $this->unlock($args[0]);
-                        $sender->sendMessage("§aThe lock has been removed.!");
-                    }
-                    else{
+                        $sender->sendMessage($this->Prefix . "§a已解锁!");
+                    }else{
                         $this->unlockSession[$sender->getName()] = true;
-                        $sender->sendMessage("§aPlease touch the door you want to unlock.");
-
+                        $sender->sendMessage($this->Prefix . "§a请点击要解锁的门.");
                     }
                     return true;
-
+                case "key":
                 case "makekey":
+                case "密钥":
+                case "生成密钥":
+                case "钥匙":
+                case "生成钥匙":
                     if (isset($args[0])) {
                         $item = ItemFactory::get(ItemIds::TRIPWIRE_HOOK);
                         $item->clearCustomName();
                         $item->setCustomName($args[0]);
                         $sender->getInventory()->setItemInHand($item);
                     } else {
-                        $sender->sendMessage("§4Missing argument, please the name of the door that has to be locked. usage: " . $command->getUsage());
+                        $sender->sendMessage($this->Prefix . "§4参数错误，§b请输入要锁定的门的名称\n§a指令用法:§e " . $command->getUsage());
                     }
                     return true;
                 default:
                     return false;
             }
-        }
-        else{
-            $this->getLogger()->info("Please execute this command ingame");
+        }else{
+            $this->getLogger()->info("§c请在游戏中执行此命令");
         }
 
     }
@@ -114,25 +117,25 @@ class Main extends PluginBase implements Listener
                     $item->clearCustomName();
                     $item->setCustomName($this->LockSession[$player->getName()]);
                     $player->getInventory()->addItem($item);
-                    $player->sendPopup("§dYou received the key succesfully! Please check your inventory.");
+                    $player->sendMessage($this->Prefix . "§d你成功收到了密钥！请检查您的背包.");
                     //deur blijft closed
                     $event->setCancelled();
-                    $player->sendMessage("§aThe door has been locked succesfully!");
+                    $player->sendMessage($this->Prefix . "§a门已成功锁定!");
                     $this->lock($event);
                 }
                 else{
                     $event->setCancelled();
                     unset($this->LockSession[$player->getName()]);
-                    $player->sendMessage("§cThis door is already locked!");
+                    $player->sendMessage($this->Prefix . "§c这扇门已经上锁了!");
                 }
 
-            }
-            else{
+            }else{
                 $key_name = $event->getItem()->getCustomName();
                 if($this->isLocked($event, $key_name)){
                     $event->setCancelled();
-                    $locked_name = $this->getLockedName($event->getBlock()->getX(), $event->getBlock()->getY(), $event->getBlock()->getZ(), $event->getPlayer()->getLevel()->getName());
-                    $player->sendPopup("§4The door §c$locked_name §4is locked.");
+                    //$locked_name = $this->getLockedName($event->getBlock()->getX(), $event->getBlock()->getY(), $event->getBlock()->getZ(), $event->getPlayer()->getLevel()->getName());
+                    //$player->sendMessage($this->Prefix . "§4门 §c$locked_name §4已被锁定.");
+					$player->sendMessage($this->Prefix . "§e这扇门门已被§c锁定.");
                 }
             }
         }
@@ -155,7 +158,7 @@ class Main extends PluginBase implements Listener
                 $stmt->bindParam(":locked_id", $locked_id, SQLITE3_INTEGER);
                 $stmt->execute();
                 $stmt->close();
-                $player->sendMessage("§aThe door has been unlocked!");
+                $player->sendMessage($this->Prefix . "§a门已解锁!");
                 unset($this->unlockSession[$player->getName()]);
             }
         }
@@ -174,11 +177,10 @@ class Main extends PluginBase implements Listener
                     $stmt->bindParam(":locked_id", $locked_id, SQLITE3_INTEGER);
                     $stmt->execute();
                     $stmt->close();
-                    $event->getPlayer()->sendMessage("§aThe door has been unlocked!");
-                }
-                else{
+                    $event->getPlayer()->sendMessage($this->Prefix . "§a门已解锁!");
+                }else{
                     $event->setCancelled();
-                    $event->getPlayer()->sendPopup("§4You cannot break this door!");
+                    $event->getPlayer()->sendMessage($this->Prefix . "§4你无法破坏这扇门!");
                 }
             }
 
@@ -249,10 +251,6 @@ class Main extends PluginBase implements Listener
         }
         return $check;
     }
-
-
-
-
 
     /**
      * @param $event

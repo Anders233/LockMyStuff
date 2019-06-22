@@ -1,36 +1,73 @@
+---
 name: LockMyStuff
 main: mohagames\lockmystuff\Main
 version: 0.2.1
-api: 3.6.2
+api:
+- 3.6.2
 author: Mohagames205
-description: Lock your stuff like never before!
+description: 以前所未有的方式锁定您的东西!
 website: https://github.com/Mohagames205/LockMyStuff
-
 commands:
+# 突然忘记别名咋写了，就这么多注册几个命令吧
   lock:
-    description: Lock a door!
-    usage: /lock <doorname>
+    description: 锁定你的门!
+    usage: /lock <门的名称>
+    permission: lms.lock:
+  锁:
+    description: 锁定你的门!
+    usage: /锁 <门的名称>
+    permission: lms.lock:
+  锁定:
+    description: 锁定你的门!
+    usage: /锁定 <门的名称>
     permission: lms.lock
   unlock:
-    description: Remove the lock from a door!
-    usage: /unlock <doorname (optional)>
+    description: 解锁你的门!
+    usage: /unlock <门的名称(可选填)>
     permission: lms.unlock
-  makekey:
-    description: Make a key!
-    usage: /makekey <doorname>
+  解:
+    description: 解锁你的门!
+    usage: /解 <门的名称(可选填)>
+    permission: lms.unlock
+  解锁:
+    description: 解锁你的门!
+    usage: /解锁 <门的名称(可选填)>
+    permission: lms.unlock
+  key:
+    description: 生成门钥匙!
+    usage: /key <门的名称>
     permission: lms.makekey
-
-
+  makekey:
+    description: 生成门钥匙!
+    usage: /makekey <门的名称>
+    permission: lms.makekey
+  密钥:
+    description: 生成门钥匙!
+    usage: /密钥 <门的名称>
+    permission: lms.makekey
+  生成密钥:
+    description: 生成门钥匙!
+    usage: /生成密钥 <门的名称>
+    permission: lms.makekey
+  钥匙:
+    description: 生成门钥匙!
+    usage: /钥匙 <门的名称>
+    permission: lms.makekey
+  生成钥匙:
+    description: 生成门钥匙!
+    usage: /生成钥匙 <门的名称>
+    permission: lms.makekey
 permissions:
   lms.lock:
-    description: Allows the user to lock a door.
-    default: OP
+    description: 允许用户锁门.
+    default: true
   lms.unlock:
-    description: Allows the user to use the /unlock command.
+    description: 允许用户使用 /解锁 命令.
     default: OP
   lms.makekey:
-    description: Allows the user to make a key for any door.
-    default: OP
+    description: 允许用户为任何门制作钥匙.
+    default: true
   lms.break:
-    description: Allows the user to break a locked door.
+    description: 允许用户破坏锁定的门.
     default: OP
+...
