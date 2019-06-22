@@ -3,6 +3,8 @@
 # LockMyStuff
 This plugin let's you lock your trapdoors, doors and chests
 
+中文版介绍请访问：[MineBBS](https://www.minebbs.com/resources/lockmystuff.661/)
+
 ### How to use this plugin?
 * Place an iron door and execute the command /lock <name>, then you will have to touch the door you wanted to lock.
 * If you want to unlock a door you will have to execute /unlock and then touch the door. You can also use /unlock <name> so you don't have to touch the door.
